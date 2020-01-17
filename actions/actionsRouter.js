@@ -65,6 +65,22 @@ router.put("/:id", validateProjectId, (req, res) => {
     });
 });
 
+router.delete("/:id", validateProjectId, (req, res) => {
+  const id = req.params.id;
+
+  Action.remove(id)
+    .then(data => {
+      res.status(200).json({
+        message: "This action has been deleted"
+      });
+    })
+    .catch(error => {
+      res.status(500).json({
+        message: "There was an error in deleting this action"
+      });
+    });
+});
+
 // Middleware
 function validateProjectId(req, res, next) {
   const id = Number(req.params.id);

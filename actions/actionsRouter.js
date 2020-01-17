@@ -28,16 +28,16 @@ router.get("/:id", validateProjectId, (req, res) => {
     });
 });
 
-router.post("/", (req, res) => {
+router.post("/", validateProjectAction, (req, res) => {
   const newAction = {
     project_id: Number(req.body.project_id),
     description: req.body.description,
-    notes: req.body.nbtes
+    notes: req.body.notes
   };
   Action.insert(newAction)
     .then(action => {
       res.status(201).json({
-        data,
+        action,
         message: "Action successfully added"
       });
     })
@@ -98,6 +98,24 @@ function validateProjectId(req, res, next) {
     .catch(error => {
       res.status(404).json({
         message: "ID not available"
+      });
+    });
+}
+
+function validateProjectAction(req, res, next) {
+  Action.get(project_id)
+    .then(action => {
+      if (data) {
+        next();
+      } else {
+        res.status(400).json({
+          message: "ID does not exist"
+        });
+      }
+    })
+    .catch(error => {
+      res.status(404).json({
+        message: "Error getting project id"
       });
     });
 }

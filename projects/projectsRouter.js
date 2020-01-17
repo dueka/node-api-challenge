@@ -21,4 +21,17 @@ router.get("/", (req, res) => {
     });
 });
 
+router.get("/:id/actions", (req, res) => {
+  getProjectActions(req.params.id)
+    .then(actions => {
+      res.status(200).json(actions);
+    })
+    .catch(error => {
+      console.log(error);
+      res.status(500).json({
+        message: "Error retrieving the posts for the users"
+      });
+    });
+});
+
 module.exports = router;

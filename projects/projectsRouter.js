@@ -34,4 +34,20 @@ router.get("/:id/actions", (req, res) => {
     });
 });
 
+router.post("/", (req, res) => {
+  const newProject = {
+    name: "Complete the introductory course on express",
+    description: "Go from zero to hero"
+  };
+  insert(newProject)
+    .then(data => {
+      res.status(201).json({ data, message: "Project Created" });
+    })
+    .catch(error => {
+      res.status(500).json({
+        message: "Error adding project"
+      });
+    });
+});
+
 module.exports = router;

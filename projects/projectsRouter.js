@@ -21,7 +21,7 @@ router.get("/", (req, res) => {
     });
 });
 
-router.get("/:id/actions", (req, res) => {
+router.get("/:id/actions", validateProjectId, (req, res) => {
   getProjectActions(req.params.id)
     .then(actions => {
       res.status(200).json(actions);
@@ -50,7 +50,7 @@ router.post("/", (req, res) => {
     });
 });
 
-router.put("/:id", (req, res) => {
+router.put("/:id", validateProjectId, (req, res) => {
   const { id } = req.params;
   const projects = req.body;
 
@@ -80,7 +80,7 @@ router.put("/:id", (req, res) => {
   }
 });
 
-router.delete("/:id", (req, res) => {
+router.delete("/:id", validateProjectId, (req, res) => {
   remove(req.params.id)
     .then(count => {
       if (count > 0) {
@@ -97,4 +97,24 @@ router.delete("/:id", (req, res) => {
     });
 });
 
+// Middleware
+function validateProjectId(req, res, next) {
+  const id = Number(req.params.id);
+  get(id)
+    .then(data => {
+      console.log(data);
+      if (data) {
+        next();
+      } else {
+        res.status(400).json({
+          message: "Project id not valid"
+        });
+      }
+    })
+    .catch(error => {
+      res.status(404).json({
+        message: "ID not available"
+      });
+    });
+}
 module.exports = router;

@@ -28,7 +28,42 @@ router.get("/:id", validateProjectId, (req, res) => {
     });
 });
 
-router.post("/");
+router.post("/", (req, res) => {
+  const newAction = {
+    project_id: Number(req.body.project_id),
+    description: req.body.description,
+    notes: req.body.nbtes
+  };
+  Action.insert(newAction)
+    .then(action => {
+      res.status(201).json({
+        data,
+        message: "Action successfully added"
+      });
+    })
+    .catch(error => {
+      res.status(500).json({
+        message: "Unable to add action"
+      });
+    });
+});
+
+router.put("/:id", validateProjectId, (req, res) => {
+  const { id } = req.params;
+  const changes = req.body;
+
+  Action.update(id, changes)
+    .then(data => {
+      res.status(200).json({
+        message: "Action updated"
+      });
+    })
+    .catch(error => {
+      res.status(500).json({
+        message: "There was an error updating action details"
+      });
+    });
+});
 
 // Middleware
 function validateProjectId(req, res, next) {
